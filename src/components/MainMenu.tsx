@@ -16,6 +16,7 @@ interface MainMenuProps {
   onOpenSettings: () => void;
   onOpenExtras: () => void;
   onExitGame: () => void;
+  onPlayPrototype: () => void;
   hasSaveData: boolean;
   continueSlotHint?: string;
 }
@@ -27,6 +28,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({
   onOpenSettings,
   onOpenExtras,
   onExitGame,
+  onPlayPrototype,
   hasSaveData,
   continueSlotHint,
 }) => {
@@ -37,7 +39,13 @@ export const MainMenu: React.FC<MainMenuProps> = ({
       id: 'new_game',
       label: 'NEW GAME',
       action: onNewGame,
-      hint: 'Awaken beneath the ruins and forge your fate',
+      hint: 'Awaken beneath the ruins and choose your protagonist',
+    },
+    {
+      id: 'play_prototype',
+      label: 'PLAY PROTOTYPE',
+      action: onPlayPrototype,
+      hint: 'Enter the 2D Ashes of Minakami side-scrolling level',
     },
     {
       id: 'continue',
@@ -64,7 +72,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({
       id: 'extras',
       label: 'EXTRAS',
       action: onOpenExtras,
-      hint: 'Examine world lore, echo archives, and art',
+      hint: 'Examine world lore, echo archives, and art gallery',
     },
     {
       id: 'exit',
@@ -74,7 +82,6 @@ export const MainMenu: React.FC<MainMenuProps> = ({
     },
   ];
 
-  // Keyboard navigation for authentic console/PC experience
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') {
@@ -82,7 +89,6 @@ export const MainMenu: React.FC<MainMenuProps> = ({
         soundEngine.playHover();
         setSelectedIndex((prev) => {
           let next = (prev + 1) % menuItems.length;
-          // Skip disabled if any
           if (menuItems[next].disabled && next === 1) {
             next = (next + 1) % menuItems.length;
           }
@@ -117,9 +123,9 @@ export const MainMenu: React.FC<MainMenuProps> = ({
   }, [selectedIndex, menuItems, onExitGame]);
 
   return (
-    <div className="relative z-20 flex flex-col items-center md:items-start select-none">
+    <div className="relative z-20 flex flex-col items-start select-none">
       {/* Menu Options List */}
-      <nav className="flex flex-col space-y-2 sm:space-y-2.5" aria-label="Main Menu">
+      <nav className="flex flex-col space-y-1.5 sm:space-y-2" aria-label="Main Menu">
         {menuItems.map((item, index) => {
           const isSelected = selectedIndex === index;
           const isDisabled = item.disabled;
@@ -139,36 +145,27 @@ export const MainMenu: React.FC<MainMenuProps> = ({
                   setSelectedIndex(index);
                 }
               }}
-              className={`group relative flex items-center gap-3.5 text-left transition-all duration-200 px-3 py-1 cursor-pointer outline-none ${
-                isDisabled ? 'opacity-30 cursor-not-allowed' : 'hover:translate-x-1.5'
+              className={`group relative flex items-center gap-3 text-left transition-all duration-150 py-1 px-2 cursor-pointer outline-none ${
+                isDisabled ? 'opacity-25 cursor-not-allowed' : 'hover:translate-x-1'
               }`}
             >
-              {/* Thin Restrained Selection Indicator Bar */}
+              {/* Minimalist Japanese Diamond Marker */}
               <div
-                className={`transition-all duration-200 flex items-center justify-center ${
-                  isSelected && !isDisabled
-                    ? 'w-5 opacity-100'
-                    : 'w-1 opacity-0 group-hover:opacity-40'
+                className={`w-3 flex items-center justify-center transition-all duration-200 ${
+                  isSelected && !isDisabled ? 'opacity-100 scale-100' : 'opacity-0 scale-75'
                 }`}
               >
-                <div
-                  className={`h-[1px] w-full transition-all duration-200 ${
-                    isSelected ? 'bg-amber-400 shadow-[0_0_6px_#f59e0b]' : 'bg-slate-600'
-                  }`}
-                />
-                {isSelected && (
-                  <div className="w-1.5 h-1.5 rotate-45 bg-amber-300 shadow-[0_0_4px_#fde047] -ml-1" />
-                )}
+                <div className="w-1.5 h-1.5 rotate-45 bg-[#c5a059] shadow-[0_0_6px_rgba(197,160,89,0.7)]" />
               </div>
 
               {/* Menu Label */}
               <span
-                className={`font-cinzel text-base sm:text-lg tracking-[0.25em] font-semibold transition-all duration-200 ${
+                className={`font-title text-base sm:text-lg tracking-[0.24em] font-semibold transition-colors ${
                   isDisabled
-                    ? 'text-slate-600'
+                    ? 'text-[#505763]'
                     : isSelected
-                    ? 'text-gold-gradient drop-shadow-[0_0_10px_rgba(245,158,11,0.4)] translate-x-1'
-                    : 'text-slate-300/80 group-hover:text-slate-100'
+                    ? 'text-[#ede8dc] font-bold'
+                    : 'text-[#9ca3af] group-hover:text-[#ded9cd]'
                 }`}
               >
                 {item.label}
@@ -179,19 +176,20 @@ export const MainMenu: React.FC<MainMenuProps> = ({
       </nav>
 
       {/* Selected Item Subtitle / Context Hint */}
-      <div className="mt-4 h-5 px-3 min-w-[280px]">
+      <div className="mt-4 h-5 px-5">
         {menuItems[selectedIndex]?.hint && (
-          <p className="font-cinzel text-[10px] tracking-[0.2em] text-slate-400/80 uppercase italic transition-opacity duration-200">
+          <p className="font-ui text-[11px] tracking-wide text-[#7d848f] transition-opacity duration-200">
             {menuItems[selectedIndex].hint}
           </p>
         )}
       </div>
 
-      {/* Controller / Keyboard Navigation Hint line */}
-      <div className="mt-3 px-3 flex items-center gap-2.5 text-[10px] font-cinzel tracking-widest text-slate-500/70 uppercase">
-        <span className="border border-slate-800 px-1.5 py-0.5 rounded text-slate-400 font-mono">W / S</span>
-        <span>·</span>
-        <span className="border border-slate-800 px-1.5 py-0.5 rounded text-slate-400 font-mono">ENTER</span>
+      {/* Console Controller / Keyboard Hint Line */}
+      <div className="mt-3 px-5 flex items-center gap-2 text-[10px] font-mono tracking-wider text-[#5a6270] uppercase">
+        <span className="text-[#848c98]">[W / S]</span>
+        <span>NAVIGATE</span>
+        <span className="text-[#3e4450]">·</span>
+        <span className="text-[#848c98]">[ENTER]</span>
         <span>SELECT</span>
       </div>
     </div>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { soundEngine } from '../audio/soundEngine';
 import { LORE_ENTRIES, CHARACTERS, CREDITS_DATA, ASSET_PATHS } from '../data/gameData';
-import { BookOpen, Users, Sparkles, Award, Image, ArrowLeft, Volume2 } from 'lucide-react';
+import { BookOpen, Users, Sparkles, Award, Image, ArrowLeft } from 'lucide-react';
 
 interface ExtrasModalProps {
   onClose: () => void;
@@ -38,19 +38,19 @@ export const ExtrasModal: React.FC<ExtrasModalProps> = ({ onClose }) => {
   ];
 
   return (
-    <div className="relative z-40 w-full h-full min-h-screen flex flex-col justify-between bg-black text-slate-100 select-none overflow-hidden animate-fadeIn">
+    <div className="relative z-40 w-full h-full min-h-screen flex flex-col justify-between bg-[#040508] text-[#ede8dc] select-none overflow-hidden animate-fadeIn">
       {/* Background Environment */}
       <div className="absolute inset-0 pointer-events-none z-0">
         <img
           src={ASSET_PATHS.settingsChamber}
           alt="Ancient sanctuary"
-          className="w-full h-full object-cover object-center filter brightness-[0.3] contrast-110"
+          className="w-full h-full object-cover object-center filter brightness-[0.3] contrast-105"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/95 via-black/85 to-black/75" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#040508]/95 via-[#040508]/85 to-[#040508]/75" />
       </div>
 
       {/* Top Header */}
-      <header className="relative z-10 flex items-center justify-between px-8 sm:px-12 py-6 border-b border-slate-900 bg-black/60 backdrop-blur-sm">
+      <header className="relative z-10 flex items-center justify-between px-8 sm:px-12 py-5 border-b border-[#181d26] bg-[#040508]/80 backdrop-blur-sm">
         <div className="flex items-center gap-4">
           <button
             type="button"
@@ -59,28 +59,28 @@ export const ExtrasModal: React.FC<ExtrasModalProps> = ({ onClose }) => {
               onClose();
             }}
             onMouseEnter={() => soundEngine.playHover()}
-            className="group flex items-center gap-2 px-3 py-1.5 border border-slate-800 hover:border-amber-500/60 text-slate-400 hover:text-amber-200 transition-colors rounded cursor-pointer"
+            className="group flex items-center gap-2 text-[#848c98] hover:text-[#ede8dc] transition-colors cursor-pointer"
           >
             <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-            <span className="font-cinzel text-xs tracking-widest uppercase font-semibold">
-              BACK TO TITLE
+            <span className="font-ui text-xs tracking-widest uppercase font-semibold">
+              BACK [ESC]
             </span>
           </button>
 
-          <div className="h-4 w-[1px] bg-slate-800" />
+          <div className="h-4 w-[1px] bg-[#222834]" />
 
-          <h2 className="font-cinzel text-xl font-bold tracking-[0.25em] uppercase text-white">
+          <h2 className="font-title text-lg sm:text-xl font-bold tracking-[0.24em] uppercase text-[#ede8dc]">
             CHRONICLE ARCHIVE & EXTRAS
           </h2>
         </div>
 
-        <span className="text-xs font-cinzel text-slate-500 hidden sm:block">
+        <span className="text-xs font-mono text-[#5a6270] hidden sm:block">
           ECHOES OF ORION CODEX
         </span>
       </header>
 
       {/* Navigation Sub-Tabs */}
-      <div className="relative z-10 flex border-b border-slate-900 bg-black/50 px-8 sm:px-12 overflow-x-auto">
+      <div className="relative z-10 flex border-b border-[#181d26] bg-[#07090e]/80 px-8 sm:px-12 overflow-x-auto">
         {[
           { id: 'lore', label: 'WORLD LORE', icon: BookOpen },
           { id: 'characters', label: 'CHARACTER ARCHIVE', icon: Users },
@@ -99,13 +99,13 @@ export const ExtrasModal: React.FC<ExtrasModalProps> = ({ onClose }) => {
                 setActiveTab(tab.id as ExtraCategory);
               }}
               onMouseEnter={() => soundEngine.playHover()}
-              className={`flex items-center gap-2 py-3 px-5 font-cinzel text-xs tracking-[0.2em] uppercase font-semibold border-b-2 transition-all cursor-pointer whitespace-nowrap ${
+              className={`flex items-center gap-2 py-3 px-5 font-ui text-xs tracking-[0.18em] uppercase font-semibold border-b-2 transition-all cursor-pointer whitespace-nowrap ${
                 isActive
-                  ? 'border-amber-400 text-amber-300 bg-amber-500/5'
-                  : 'border-transparent text-slate-400 hover:text-slate-200'
+                  ? 'border-[#c5a059] text-[#c5a059] bg-[#c5a059]/5'
+                  : 'border-transparent text-[#7d848f] hover:text-[#ded9cd]'
               }`}
             >
-              <Icon className="w-4 h-4" />
+              <Icon className="w-3.5 h-3.5" />
               {tab.label}
             </button>
           );
@@ -113,12 +113,12 @@ export const ExtrasModal: React.FC<ExtrasModalProps> = ({ onClose }) => {
       </div>
 
       {/* Center Body */}
-      <div className="relative z-10 flex-1 overflow-y-auto px-8 sm:px-12 py-6 max-w-6xl mx-auto w-full">
+      <div className="relative z-10 flex-1 overflow-y-auto px-8 sm:px-12 py-6 max-w-6xl mx-auto w-full custom-scroll">
         {/* TAB 1: WORLD LORE */}
         {activeTab === 'lore' && (
           <div className="flex flex-col md:flex-row gap-8">
-            <div className="w-full md:w-1/3 space-y-2 border-b md:border-b-0 md:border-r border-slate-900 pb-4 md:pb-0 md:pr-6">
-              <span className="text-[10px] font-cinzel tracking-[0.25em] text-slate-500 uppercase block mb-3 font-semibold">
+            <div className="w-full md:w-1/3 space-y-2 border-b md:border-b-0 md:border-r border-[#181d26] pb-4 md:pb-0 md:pr-6">
+              <span className="text-[10px] font-ui tracking-[0.25em] text-[#5a6270] uppercase block mb-3 font-semibold">
                 ANCIENT RECORDS
               </span>
               {LORE_ENTRIES.map((entry) => {
@@ -132,16 +132,16 @@ export const ExtrasModal: React.FC<ExtrasModalProps> = ({ onClose }) => {
                       setSelectedLoreId(entry.id);
                     }}
                     onMouseEnter={() => soundEngine.playHover()}
-                    className={`w-full text-left p-3 rounded border transition-all cursor-pointer ${
+                    className={`w-full text-left p-3 border transition-all cursor-pointer ${
                       isSelected
-                        ? 'border-amber-400/80 bg-amber-500/10 text-amber-300'
-                        : 'border-slate-800 bg-slate-900/30 text-slate-300 hover:border-slate-700 hover:bg-slate-900/60'
+                        ? 'border-[#c5a059]/70 bg-[#c5a059]/10 text-[#ede8dc]'
+                        : 'border-[#181d26] bg-[#07090e] text-[#848c98] hover:border-[#2e3442] hover:text-[#ded9cd]'
                     }`}
                   >
-                    <span className="text-[10px] font-cinzel tracking-wider text-slate-400 block uppercase">
+                    <span className="text-[9px] font-mono tracking-wider text-[#6b7382] block uppercase">
                       {entry.category}
                     </span>
-                    <span className="font-cinzel text-xs font-bold tracking-wide block mt-0.5">
+                    <span className="font-title text-xs font-bold tracking-wide block mt-0.5">
                       {entry.title}
                     </span>
                   </button>
@@ -150,21 +150,21 @@ export const ExtrasModal: React.FC<ExtrasModalProps> = ({ onClose }) => {
             </div>
 
             <div className="w-full md:w-2/3 space-y-4">
-              <div className="border-b border-slate-900 pb-3">
-                <span className="text-[11px] font-cinzel tracking-[0.25em] text-cyan-400 uppercase font-semibold">
+              <div className="border-b border-[#181d26] pb-3">
+                <span className="text-[10px] font-ui tracking-[0.25em] text-[#c5a059] uppercase font-semibold">
                   {selectedLore.category} RECORD
                 </span>
-                <h3 className="font-cinzel text-2xl font-bold tracking-wider text-slate-100 uppercase mt-1">
+                <h3 className="font-title text-2xl font-bold tracking-wider text-[#ede8dc] uppercase mt-1">
                   {selectedLore.title}
                 </h3>
-                <p className="font-cinzel text-xs text-amber-300/80 italic mt-0.5">
+                <p className="font-ui text-xs text-[#848c98] italic mt-0.5">
                   {selectedLore.subtitle}
                 </p>
               </div>
 
-              <div className="space-y-4 font-sans text-sm text-slate-300 leading-relaxed">
+              <div className="space-y-4 font-ui text-sm text-[#b8b3a7] leading-relaxed">
                 {selectedLore.content.map((paragraph, index) => (
-                  <p key={index} className="text-slate-300/90">
+                  <p key={index} className="text-[#a0a6b2]">
                     {paragraph}
                   </p>
                 ))}
@@ -179,7 +179,7 @@ export const ExtrasModal: React.FC<ExtrasModalProps> = ({ onClose }) => {
             {[CHARACTERS.kiyoji, CHARACTERS.hanetsu].map((char) => (
               <div
                 key={char.id}
-                className="bg-black/60 border border-slate-800 rounded overflow-hidden flex flex-col"
+                className="bg-[#07090e] border border-[#181d26] overflow-hidden flex flex-col"
               >
                 <div className="relative h-64 overflow-hidden">
                   <img
@@ -187,37 +187,37 @@ export const ExtrasModal: React.FC<ExtrasModalProps> = ({ onClose }) => {
                     alt={char.name}
                     className="w-full h-full object-cover object-top filter brightness-95"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#07090e] via-[#07090e]/40 to-transparent" />
                   <div className="absolute bottom-3 left-4">
-                    <span className="text-[10px] font-cinzel tracking-widest text-amber-400 uppercase">
+                    <span className="text-[10px] font-ui tracking-widest text-[#c5a059] uppercase">
                       {char.role} · {char.gender}
                     </span>
-                    <h4 className="font-cinzel text-2xl font-bold tracking-wider text-white">
+                    <h4 className="font-title text-2xl font-bold tracking-wider text-[#ede8dc]">
                       {char.name}
                     </h4>
                   </div>
                 </div>
 
                 <div className="p-5 space-y-4 flex-1 flex flex-col justify-between">
-                  <p className="font-sans text-xs text-slate-300 leading-relaxed">
+                  <p className="font-ui text-xs text-[#b8b3a7] leading-relaxed">
                     &ldquo;{char.description}&rdquo;
                   </p>
-                  <p className="font-cinzel text-xs text-amber-300/90 italic">
+                  <p className="font-kanji text-xs text-[#7d848f] italic">
                     &ldquo;{char.quote}&rdquo;
                   </p>
 
-                  <div className="border-t border-slate-900 pt-3 space-y-2 text-xs font-cinzel">
-                    <div className="flex justify-between text-slate-400">
-                      <span>Weapon:</span>
-                      <span className="text-slate-200 font-semibold">{char.weapon}</span>
+                  <div className="border-t border-[#181d26] pt-3 space-y-2 text-xs font-ui">
+                    <div className="flex justify-between text-[#6b7382]">
+                      <span className="uppercase text-[11px]">Weapon:</span>
+                      <span className="text-[#ded9cd] font-medium">{char.weapon}</span>
                     </div>
-                    <div className="flex justify-between text-slate-400">
-                      <span>Martial Discipline:</span>
-                      <span className="text-slate-200">{char.specialty}</span>
+                    <div className="flex justify-between text-[#6b7382]">
+                      <span className="uppercase text-[11px]">Martial Discipline:</span>
+                      <span className="text-[#ded9cd]">{char.specialty}</span>
                     </div>
-                    <div className="flex justify-between text-slate-400">
-                      <span>Divine Gift:</span>
-                      <span className="text-cyan-300 font-semibold">{char.ability}</span>
+                    <div className="flex justify-between text-[#6b7382]">
+                      <span className="uppercase text-[11px]">Divine Gift:</span>
+                      <span className="text-[#c5a059] font-medium">{char.ability}</span>
                     </div>
                   </div>
                 </div>
@@ -229,48 +229,48 @@ export const ExtrasModal: React.FC<ExtrasModalProps> = ({ onClose }) => {
         {/* TAB 3: ECHO SYSTEM */}
         {activeTab === 'echo_system' && (
           <div className="space-y-6">
-            <div className="border-b border-slate-900 pb-3">
-              <span className="text-[11px] font-cinzel tracking-[0.25em] text-cyan-400 uppercase font-semibold">
+            <div className="border-b border-[#181d26] pb-3">
+              <span className="text-[10px] font-ui tracking-[0.25em] text-[#c5a059] uppercase font-semibold">
                 CENTRAL LORE & MECHANICS
               </span>
-              <h3 className="font-cinzel text-2xl font-bold tracking-wider text-slate-100 uppercase mt-1">
+              <h3 className="font-title text-2xl font-bold tracking-wider text-[#ede8dc] uppercase mt-1">
                 THE ECHO INHERITANCE
               </h3>
-              <p className="font-cinzel text-xs text-amber-300/80 italic mt-0.5">
+              <p className="font-ui text-xs text-[#848c98] italic mt-0.5">
                 &ldquo;Every deceased person leaves behind an echo containing fragments of their knowledge,
                 talents, combat abilities, and memories.&rdquo;
               </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="p-5 bg-black/60 border border-slate-800 rounded space-y-2">
-                <span className="text-[10px] font-cinzel tracking-widest text-amber-400 uppercase font-bold">
+              <div className="p-5 bg-[#07090e] border border-[#181d26] space-y-2">
+                <span className="text-[10px] font-ui tracking-widest text-[#c5a059] uppercase font-bold">
                   01. ANCESTRAL WISDOM
                 </span>
-                <h4 className="font-cinzel text-sm font-bold text-white">Approaching the Fallen</h4>
-                <p className="text-xs text-slate-400 font-sans leading-relaxed">
-                  The bodies of fallen villagers and temple artisans radiate ethereal pale-blue energy.
-                  Approaching them initiates resonance.
+                <h4 className="font-title text-sm font-bold text-[#ede8dc]">Approaching the Fallen</h4>
+                <p className="text-xs text-[#848c98] font-ui leading-relaxed">
+                  The bodies of fallen villagers and temple artisans radiate faint spiritual echoes.
+                  Stepping near initiates resonance.
                 </p>
               </div>
 
-              <div className="p-5 bg-black/60 border border-slate-800 rounded space-y-2">
-                <span className="text-[10px] font-cinzel tracking-widest text-cyan-400 uppercase font-bold">
+              <div className="p-5 bg-[#07090e] border border-[#181d26] space-y-2">
+                <span className="text-[10px] font-ui tracking-widest text-[#c5a059] uppercase font-bold">
                   02. MEMORY WEAVING
                 </span>
-                <h4 className="font-cinzel text-sm font-bold text-white">Inheriting Talent</h4>
-                <p className="text-xs text-slate-400 font-sans leading-relaxed">
-                  Absorbing an echo permanently transfers ancestral muscle memory: master parries, celestial
+                <h4 className="font-title text-sm font-bold text-[#ede8dc]">Inheriting Talent</h4>
+                <p className="text-xs text-[#848c98] font-ui leading-relaxed">
+                  Absorbing an echo permanently weaves ancestral muscle memory: master parries, celestial
                   slashes, and counter-deflections.
                 </p>
               </div>
 
-              <div className="p-5 bg-black/60 border border-slate-800 rounded space-y-2">
-                <span className="text-[10px] font-cinzel tracking-widest text-amber-400 uppercase font-bold">
+              <div className="p-5 bg-[#07090e] border border-[#181d26] space-y-2">
+                <span className="text-[10px] font-ui tracking-widest text-[#c5a059] uppercase font-bold">
                   03. DIVINE RESISTANCE
                 </span>
-                <h4 className="font-cinzel text-sm font-bold text-white">Piercing the Rift</h4>
-                <p className="text-xs text-slate-400 font-sans leading-relaxed">
+                <h4 className="font-title text-sm font-bold text-[#ede8dc]">Piercing the Rift</h4>
+                <p className="text-xs text-[#848c98] font-ui leading-relaxed">
                   Normal steel cannot harm celestial entities. Only by channeling inherited echoes can the
                   protagonist shatter divine armor.
                 </p>
@@ -282,17 +282,17 @@ export const ExtrasModal: React.FC<ExtrasModalProps> = ({ onClose }) => {
         {/* TAB 4: ART GALLERY */}
         {activeTab === 'gallery' && (
           <div className="space-y-6">
-            <div className="relative h-96 rounded border border-slate-800 overflow-hidden bg-black">
+            <div className="relative h-96 border border-[#181d26] overflow-hidden bg-black">
               <img
                 src={activeGalleryImage}
                 alt="Selected Concept Artwork"
                 className="w-full h-full object-contain filter brightness-105"
               />
               <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black via-black/80 to-transparent">
-                <span className="text-[11px] font-cinzel text-amber-300 uppercase tracking-widest font-bold">
+                <span className="text-[11px] font-title text-[#c5a059] uppercase tracking-widest font-bold">
                   {galleryItems.find((g) => g.path === activeGalleryImage)?.title}
                 </span>
-                <p className="text-xs text-slate-300 font-sans mt-0.5">
+                <p className="text-xs text-[#b8b3a7] font-ui mt-0.5">
                   {galleryItems.find((g) => g.path === activeGalleryImage)?.desc}
                 </p>
               </div>
@@ -307,10 +307,10 @@ export const ExtrasModal: React.FC<ExtrasModalProps> = ({ onClose }) => {
                     soundEngine.playSelect();
                     setActiveGalleryImage(item.path);
                   }}
-                  className={`h-20 rounded border overflow-hidden transition-all cursor-pointer ${
+                  className={`h-20 border overflow-hidden transition-all cursor-pointer ${
                     activeGalleryImage === item.path
-                      ? 'border-amber-400 ring-2 ring-amber-400/40 scale-105'
-                      : 'border-slate-800 opacity-60 hover:opacity-100'
+                      ? 'border-[#c5a059] ring-1 ring-[#c5a059]'
+                      : 'border-[#181d26] opacity-50 hover:opacity-100'
                   }`}
                 >
                   <img src={item.path} alt={item.title} className="w-full h-full object-cover" />
@@ -324,21 +324,21 @@ export const ExtrasModal: React.FC<ExtrasModalProps> = ({ onClose }) => {
         {activeTab === 'credits' && (
           <div className="max-w-xl mx-auto py-6 text-center space-y-6">
             <div className="space-y-1">
-              <h3 className="font-cinzel-dec text-3xl font-black uppercase text-gold-gradient tracking-widest">
+              <h3 className="font-title text-3xl font-black uppercase text-[#ede8dc] tracking-widest">
                 ECHOES OF ORION
               </h3>
-              <span className="text-[11px] font-cinzel tracking-[0.3em] text-slate-500 uppercase block">
-                GAME CREDITS & PRODUCTION COUNCIL
+              <span className="text-[10px] font-mono tracking-[0.3em] text-[#5a6270] uppercase block">
+                PRODUCTION COUNCIL & CREDITS
               </span>
             </div>
 
-            <div className="space-y-4 pt-4 border-t border-slate-900">
+            <div className="space-y-4 pt-4 border-t border-[#181d26]">
               {CREDITS_DATA.map((item, index) => (
                 <div key={index} className="space-y-0.5">
-                  <span className="text-[10px] font-cinzel tracking-widest text-slate-500 uppercase block">
+                  <span className="text-[10px] font-ui tracking-widest text-[#6b7382] uppercase block">
                     {item.role}
                   </span>
-                  <span className="font-cinzel text-sm font-bold text-slate-200 tracking-wider">
+                  <span className="font-title text-sm font-bold text-[#ede8dc] tracking-wider">
                     {item.name}
                   </span>
                 </div>
@@ -349,7 +349,7 @@ export const ExtrasModal: React.FC<ExtrasModalProps> = ({ onClose }) => {
       </div>
 
       {/* Bottom Footer */}
-      <footer className="relative z-10 flex items-center justify-between px-8 sm:px-12 py-4 border-t border-slate-900 bg-black/70 backdrop-blur-sm text-xs font-cinzel text-slate-500">
+      <footer className="relative z-10 flex items-center justify-between px-8 sm:px-12 py-3 border-t border-[#181d26] bg-[#040508]/80 backdrop-blur-sm text-xs font-mono text-[#5a6270]">
         <span>ARCHIVE INSPECTION MODE</span>
         <span>[ESC] RETURN TO TITLE</span>
       </footer>

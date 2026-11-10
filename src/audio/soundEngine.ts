@@ -408,6 +408,136 @@ class SoundEngine {
     osc.start(now);
     osc.stop(now + 0.22);
   }
+
+  // --- 2D GAMEPLAY SOUNDS ---
+
+  public playJump() {
+    this.initContext();
+    if (!this.ctx || !this.sfxGain || this.settings.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Ascending wind whoosh
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(160, now);
+    osc.frequency.exponentialRampToValueAtTime(380, now + 0.16);
+
+    gain.gain.setValueAtTime(0.001, now);
+    gain.gain.linearRampToValueAtTime(0.12, now + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.18);
+
+    osc.connect(gain);
+    gain.connect(this.sfxGain);
+
+    osc.start(now);
+    osc.stop(now + 0.19);
+  }
+
+  public playLand() {
+    this.initContext();
+    if (!this.ctx || !this.sfxGain || this.settings.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Stone impact thud
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(110, now);
+    osc.frequency.exponentialRampToValueAtTime(45, now + 0.15);
+
+    gain.gain.setValueAtTime(0.001, now);
+    gain.gain.linearRampToValueAtTime(0.18, now + 0.015);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.16);
+
+    osc.connect(gain);
+    gain.connect(this.sfxGain);
+
+    osc.start(now);
+    osc.stop(now + 0.17);
+  }
+
+  public playStep() {
+    this.initContext();
+    if (!this.ctx || !this.sfxGain || this.settings.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+
+    osc.type = 'triangle';
+    const pitch = 140 + Math.random() * 40;
+    osc.frequency.setValueAtTime(pitch, now);
+    osc.frequency.exponentialRampToValueAtTime(70, now + 0.05);
+
+    gain.gain.setValueAtTime(0.001, now);
+    gain.gain.linearRampToValueAtTime(0.045, now + 0.008);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.06);
+
+    osc.connect(gain);
+    gain.connect(this.sfxGain);
+
+    osc.start(now);
+    osc.stop(now + 0.065);
+  }
+
+  public playBladeSlash() {
+    this.initContext();
+    if (!this.ctx || !this.sfxGain || this.settings.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // High velocity whoosh + metallic blade ring
+    const osc1 = this.ctx.createOscillator();
+    const osc2 = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+
+    osc1.type = 'sawtooth';
+    osc1.frequency.setValueAtTime(420, now);
+    osc1.frequency.exponentialRampToValueAtTime(80, now + 0.22);
+
+    osc2.type = 'sine';
+    osc2.frequency.setValueAtTime(1240, now);
+    osc2.frequency.exponentialRampToValueAtTime(320, now + 0.25);
+
+    gain.gain.setValueAtTime(0.001, now);
+    gain.gain.linearRampToValueAtTime(0.18, now + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.26);
+
+    osc1.connect(gain);
+    osc2.connect(gain);
+    gain.connect(this.sfxGain);
+
+    osc1.start(now);
+    osc2.start(now);
+    osc1.stop(now + 0.27);
+    osc2.stop(now + 0.27);
+  }
+
+  public playStoneShatter() {
+    this.initContext();
+    if (!this.ctx || !this.sfxGain || this.settings.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Explosive crunch / heavy stone shatter
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(180, now);
+    osc.frequency.exponentialRampToValueAtTime(35, now + 0.35);
+
+    gain.gain.setValueAtTime(0.001, now);
+    gain.gain.linearRampToValueAtTime(0.24, now + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.36);
+
+    osc.connect(gain);
+    gain.connect(this.sfxGain);
+
+    osc.start(now);
+    osc.stop(now + 0.38);
+  }
 }
 
 export const soundEngine = new SoundEngine();

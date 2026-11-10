@@ -31,7 +31,7 @@ export const StepperControl = <T extends string | number>({
 
   return (
     <div
-      className={`flex items-center justify-between border border-slate-800 bg-black/40 hover:border-slate-700 px-2 py-1 select-none transition-colors ${widthClass} ${
+      className={`flex items-center justify-between border border-[#222834] bg-[#07090e] hover:border-[#384152] px-2 py-1 select-none transition-colors ${widthClass} ${
         disabled ? 'opacity-30 cursor-not-allowed' : ''
       }`}
     >
@@ -39,13 +39,13 @@ export const StepperControl = <T extends string | number>({
         type="button"
         disabled={disabled}
         onClick={() => handleStep(-1)}
-        className="w-6 h-6 flex items-center justify-center text-slate-500 hover:text-amber-300 disabled:opacity-20 cursor-pointer text-xs font-mono transition-colors"
+        className="w-5 h-5 flex items-center justify-center text-[#6b7382] hover:text-[#c5a059] disabled:opacity-20 cursor-pointer text-xs font-mono transition-colors"
         aria-label="Previous Option"
       >
         &#9664;
       </button>
 
-      <span className="font-cinzel text-xs tracking-wider text-slate-200 font-medium px-2 truncate text-center flex-1">
+      <span className="font-ui text-xs tracking-wider text-[#ded9cd] font-medium px-2 truncate text-center flex-1">
         {displayLabel}
       </span>
 
@@ -53,7 +53,7 @@ export const StepperControl = <T extends string | number>({
         type="button"
         disabled={disabled}
         onClick={() => handleStep(1)}
-        className="w-6 h-6 flex items-center justify-center text-slate-500 hover:text-amber-300 disabled:opacity-20 cursor-pointer text-xs font-mono transition-colors"
+        className="w-5 h-5 flex items-center justify-center text-[#6b7382] hover:text-[#c5a059] disabled:opacity-20 cursor-pointer text-xs font-mono transition-colors"
         aria-label="Next Option"
       >
         &#9654;

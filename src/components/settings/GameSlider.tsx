@@ -37,13 +37,13 @@ export const GameSlider: React.FC<GameSliderProps> = ({
         type="button"
         disabled={disabled || value <= min}
         onClick={() => handleStep(-1)}
-        className="w-5 h-5 flex items-center justify-center text-slate-500 hover:text-amber-300 disabled:opacity-20 cursor-pointer text-xs font-mono"
+        className="w-4 h-4 flex items-center justify-center text-[#6b7382] hover:text-[#c5a059] disabled:opacity-20 cursor-pointer text-[10px] font-mono"
       >
         &#9664;
       </button>
 
-      {/* Track */}
-      <div className="flex-1 relative flex items-center h-6 cursor-pointer">
+      {/* Slider Track */}
+      <div className="flex-1 relative flex items-center h-5 cursor-pointer">
         <input
           type="range"
           min={min}
@@ -55,11 +55,11 @@ export const GameSlider: React.FC<GameSliderProps> = ({
             soundEngine.playTick();
             onChange(Number(e.target.value));
           }}
-          className="w-full h-1 bg-slate-800 rounded-none appearance-none accent-amber-500 cursor-pointer disabled:cursor-not-allowed"
+          className="w-full h-[2px] bg-[#222834] appearance-none accent-[#c5a059] cursor-pointer disabled:cursor-not-allowed"
         />
-        {/* Fill Highlight */}
+        {/* Subtle Fill Bar */}
         <div
-          className="absolute left-0 top-[11px] h-1 bg-gradient-to-r from-amber-600 to-amber-400 pointer-events-none"
+          className="absolute left-0 top-[9px] h-[2px] bg-[#c5a059] pointer-events-none"
           style={{ width: `${percentage}%` }}
         />
       </div>
@@ -68,12 +68,12 @@ export const GameSlider: React.FC<GameSliderProps> = ({
         type="button"
         disabled={disabled || value >= max}
         onClick={() => handleStep(1)}
-        className="w-5 h-5 flex items-center justify-center text-slate-500 hover:text-amber-300 disabled:opacity-20 cursor-pointer text-xs font-mono"
+        className="w-4 h-4 flex items-center justify-center text-[#6b7382] hover:text-[#c5a059] disabled:opacity-20 cursor-pointer text-[10px] font-mono"
       >
         &#9654;
       </button>
 
-      <span className="w-14 text-right font-cinzel text-xs text-amber-200/90 tabular-nums">
+      <span className="w-12 text-right font-mono text-xs text-[#ded9cd] tabular-nums">
         {value}
         {unit}
       </span>

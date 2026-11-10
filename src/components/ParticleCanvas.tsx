@@ -12,13 +12,12 @@ interface Particle {
   vy: number;
   size: number;
   color: string;
-  glowColor: string;
   alpha: number;
   baseAlpha: number;
   pulseSpeed: number;
   pulsePhase: number;
-  type: 'ember' | 'spectral' | 'ash';
-  depth: number; // 0.2 to 1.0 for parallax
+  type: 'ember' | 'ash' | 'wisp';
+  depth: number;
 }
 
 export const ParticleCanvas: React.FC<ParticleCanvasProps> = ({
@@ -47,7 +46,6 @@ export const ParticleCanvas: React.FC<ParticleCanvasProps> = ({
 
     const handleMouseMove = (e: MouseEvent) => {
       if (!enableParallax) return;
-      // Normalized between -1 and 1
       mouseRef.current.targetX = (e.clientX / window.innerWidth) * 2 - 1;
       mouseRef.current.targetY = (e.clientY / window.innerHeight) * 2 - 1;
     };
@@ -55,59 +53,53 @@ export const ParticleCanvas: React.FC<ParticleCanvasProps> = ({
     window.addEventListener('resize', handleResize);
     window.addEventListener('mousemove', handleMouseMove);
 
-    // Particle count by quality
+    // Particle count by quality tier
     const counts = {
-      Low: 35,
-      Medium: 75,
-      High: 140,
-      Cinematic: 220,
+      Low: 25,
+      Medium: 55,
+      High: 90,
+      Cinematic: 140,
     };
-    const particleCount = counts[graphicsQuality] || 140;
+    const particleCount = counts[graphicsQuality] || 90;
 
     const particles: Particle[] = [];
 
     for (let i = 0; i < particleCount; i++) {
       const randType = Math.random();
-      let type: 'ember' | 'spectral' | 'ash' = 'ash';
-      let color = 'rgba(160, 170, 185, ';
-      let glowColor = 'rgba(160, 170, 185, 0)';
-      let size = Math.random() * 2 + 1;
+      let type: 'ember' | 'ash' | 'wisp' = 'ash';
+      let color = 'rgba(150, 155, 165, ';
+      let size = Math.random() * 1.5 + 0.8;
 
-      if (randType < 0.35) {
-        // Glowing fire ember
+      if (randType < 0.3) {
+        // Burnt wood ember (subtle warm amber/crimson, natural not neon)
         type = 'ember';
-        const isWarmGold = Math.random() > 0.5;
-        color = isWarmGold ? 'rgba(245, 175, 65, ' : 'rgba(235, 75, 45, ';
-        glowColor = isWarmGold ? 'rgba(245, 175, 65, 0.4)' : 'rgba(235, 75, 45, 0.4)';
-        size = Math.random() * 2.5 + 1.2;
-      } else if (randType < 0.70) {
-        // Ethereal pale-blue spectral echo particle
-        type = 'spectral';
-        color = 'rgba(125, 230, 255, ';
-        glowColor = 'rgba(70, 200, 255, 0.5)';
-        size = Math.random() * 3 + 1.5;
+        color = Math.random() > 0.5 ? 'rgba(215, 125, 45, ' : 'rgba(195, 75, 40, ';
+        size = Math.random() * 2 + 1;
+      } else if (randType < 0.45) {
+        // Faint moonlight silver wisp
+        type = 'wisp';
+        color = 'rgba(210, 220, 230, ';
+        size = Math.random() * 2.2 + 1.2;
       } else {
-        // Drifting burnt ash
+        // Natural drifting ash
         type = 'ash';
-        color = 'rgba(130, 135, 145, ';
-        glowColor = 'transparent';
-        size = Math.random() * 1.8 + 0.8;
+        color = 'rgba(130, 135, 142, ';
+        size = Math.random() * 1.6 + 0.6;
       }
 
       particles.push({
         x: Math.random() * width,
         y: Math.random() * height,
-        vx: (Math.random() - 0.4) * 0.4,
-        vy: type === 'ember' ? -(Math.random() * 0.7 + 0.3) : -(Math.random() * 0.3 + 0.1),
+        vx: (Math.random() - 0.45) * 0.35,
+        vy: type === 'ember' ? -(Math.random() * 0.5 + 0.2) : -(Math.random() * 0.25 + 0.08),
         size,
         color,
-        glowColor,
-        alpha: Math.random() * 0.7 + 0.2,
-        baseAlpha: Math.random() * 0.6 + 0.3,
-        pulseSpeed: Math.random() * 0.03 + 0.01,
+        alpha: Math.random() * 0.5 + 0.15,
+        baseAlpha: Math.random() * 0.4 + 0.2,
+        pulseSpeed: Math.random() * 0.02 + 0.01,
         pulsePhase: Math.random() * Math.PI * 2,
         type,
-        depth: Math.random() * 0.8 + 0.2,
+        depth: Math.random() * 0.7 + 0.3,
       });
     }
 
@@ -118,60 +110,48 @@ export const ParticleCanvas: React.FC<ParticleCanvasProps> = ({
       lastTime = time;
 
       // Smooth mouse parallax damping
-      mouseRef.current.x += (mouseRef.current.targetX - mouseRef.current.x) * 0.05;
-      mouseRef.current.y += (mouseRef.current.targetY - mouseRef.current.y) * 0.05;
+      mouseRef.current.x += (mouseRef.current.targetX - mouseRef.current.x) * 0.04;
+      mouseRef.current.y += (mouseRef.current.targetY - mouseRef.current.y) * 0.04;
 
       ctx.clearRect(0, 0, width, height);
 
       for (let i = 0; i < particles.length; i++) {
         const p = particles[i];
 
-        // Wave motion for spectral echoes
         let sway = 0;
-        if (p.type === 'spectral') {
-          sway = Math.sin(time * 0.0015 + p.pulsePhase) * 0.4;
+        if (p.type === 'wisp' || p.type === 'ember') {
+          sway = Math.sin(time * 0.0012 + p.pulsePhase) * 0.3;
         }
 
         p.x += (p.vx + sway) * (dt * 60);
         p.y += p.vy * (dt * 60);
 
-        // Alpha pulsing
         p.pulsePhase += p.pulseSpeed;
-        p.alpha = p.baseAlpha + Math.sin(p.pulsePhase) * 0.25;
-        p.alpha = Math.max(0.05, Math.min(1, p.alpha));
+        p.alpha = p.baseAlpha + Math.sin(p.pulsePhase) * 0.18;
+        p.alpha = Math.max(0.04, Math.min(0.8, p.alpha));
 
-        // Wrap around boundaries
-        if (p.y < -20) {
+        if (p.y < -10) {
           p.y = height + 10;
           p.x = Math.random() * width;
-        } else if (p.y > height + 20) {
+        } else if (p.y > height + 10) {
           p.y = -10;
           p.x = Math.random() * width;
         }
 
-        if (p.x < -20) p.x = width + 10;
-        else if (p.x > width + 20) p.x = -10;
+        if (p.x < -10) p.x = width + 10;
+        else if (p.x > width + 10) p.x = -10;
 
-        // Apply Parallax offset
-        const parallaxX = mouseRef.current.x * p.depth * 25;
-        const parallaxY = mouseRef.current.y * p.depth * 18;
+        const parallaxX = mouseRef.current.x * p.depth * 20;
+        const parallaxY = mouseRef.current.y * p.depth * 14;
 
         const drawX = p.x + parallaxX;
         const drawY = p.y + parallaxY;
 
         ctx.save();
-
-        if (p.type === 'spectral' || p.type === 'ember') {
-          // Glow halo
-          ctx.shadowBlur = p.type === 'spectral' ? 12 : 8;
-          ctx.shadowColor = p.glowColor;
-        }
-
         ctx.fillStyle = `${p.color}${p.alpha})`;
         ctx.beginPath();
         ctx.arc(drawX, drawY, p.size, 0, Math.PI * 2);
         ctx.fill();
-
         ctx.restore();
       }
 

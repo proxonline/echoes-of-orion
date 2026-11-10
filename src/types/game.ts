@@ -2,6 +2,7 @@ export type ScreenState =
   | 'TITLE'
   | 'CHARACTER_SELECT'
   | 'PROLOGUE'
+  | 'PLAYABLE_LEVEL'
   | 'LOAD_GAME'
   | 'SETTINGS'
   | 'EXTRAS'

@@ -61,7 +61,6 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
     if (!pendingResolution) return;
 
     if (pendingResolution.countdown <= 0) {
-      // Revert!
       soundEngine.playBack();
       setCurrent((prev) => ({
         ...prev,
@@ -96,13 +95,11 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
         }
         onClose();
       } else if (e.key === 'q' || e.key === 'Q') {
-        // Step category up
         const idx = CATEGORIES.findIndex((c) => c.id === activeCategory);
         const prevIdx = (idx - 1 + CATEGORIES.length) % CATEGORIES.length;
         soundEngine.playHover();
         setActiveCategory(CATEGORIES[prevIdx].id);
       } else if (e.key === 'e' || e.key === 'E') {
-        // Step category down
         const idx = CATEGORIES.findIndex((c) => c.id === activeCategory);
         const nextIdx = (idx + 1) % CATEGORIES.length;
         soundEngine.playHover();
@@ -117,7 +114,6 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [activeCategory, current, hasChanges, onSaveSettings, onClose, pendingResolution, showResetConfirm]);
 
-  // Update specific category setting
   const handleUpdate = <C extends keyof GameSettings, K extends keyof GameSettings[C]>(
     category: C,
     key: K,
@@ -138,7 +134,6 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
     }
   };
 
-  // Preset quick applier in Graphics
   const handleApplyPreset = (preset: GameSettings['graphics']['preset']) => {
     soundEngine.playSelect();
     let updatedGraphics = { ...current.graphics, preset };
@@ -242,7 +237,6 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
     setHasChanges(true);
   };
 
-  // Resolution change requested
   const handleRequestResolution = (newRes: string) => {
     soundEngine.playSelect();
     const prev = current.display.resolution;
@@ -280,7 +274,6 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
     setPendingResolution(null);
   };
 
-  // Restore defaults
   const handleConfirmReset = () => {
     soundEngine.playConfirm();
     setCurrent({ ...DEFAULT_SETTINGS });
@@ -296,58 +289,57 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
   };
 
   return (
-    <div className="relative z-40 w-full h-full min-h-screen flex flex-col justify-between bg-black text-slate-100 select-none overflow-hidden animate-fadeIn">
+    <div className="relative z-40 w-full h-full min-h-screen flex flex-col justify-between bg-[#040508] text-[#ede8dc] select-none overflow-hidden animate-fadeIn">
       {/* 1. Full-Screen Subdued Environmental Interior Background */}
       <div className="absolute inset-0 pointer-events-none z-0">
         <img
           src={ASSET_PATHS.settingsChamber}
           alt="Ancient stone temple chamber"
-          className="w-full h-full object-cover object-center filter brightness-[0.4] contrast-110"
+          className="w-full h-full object-cover object-center filter brightness-[0.35] contrast-105"
         />
-        {/* Controlled dark cinematic overlays for contrast */}
-        <div className="absolute inset-0 bg-gradient-to-r from-black/95 via-black/85 to-black/75" />
-        <div className="absolute inset-0 bg-radial-vignette opacity-70" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#040508]/95 via-[#040508]/85 to-[#040508]/75" />
+        <div className="absolute inset-0 cinematic-vignette opacity-70" />
       </div>
 
       {/* 2. Top Header Bar */}
-      <header className="relative z-10 flex items-center justify-between px-8 sm:px-12 py-6 border-b border-slate-900 bg-black/60 backdrop-blur-sm">
+      <header className="relative z-10 flex items-center justify-between px-8 sm:px-12 py-5 border-b border-[#181d26] bg-[#040508]/80 backdrop-blur-sm">
         <div className="flex items-center gap-4">
           <button
             type="button"
             onClick={handleReturn}
             onMouseEnter={() => soundEngine.playHover()}
-            className="group flex items-center gap-2 px-3 py-1.5 border border-slate-800 hover:border-amber-500/60 text-slate-400 hover:text-amber-200 transition-colors rounded cursor-pointer"
+            className="group flex items-center gap-2 text-[#848c98] hover:text-[#ede8dc] transition-colors cursor-pointer"
           >
             <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-            <span className="font-cinzel text-xs tracking-widest uppercase font-semibold">
-              BACK
+            <span className="font-ui text-xs tracking-widest uppercase font-semibold">
+              BACK [ESC]
             </span>
           </button>
 
-          <div className="h-4 w-[1px] bg-slate-800" />
+          <div className="h-4 w-[1px] bg-[#222834]" />
 
           <div className="flex items-center gap-3">
-            <h2 className="font-cinzel text-lg sm:text-xl font-black tracking-[0.25em] uppercase text-white">
-              SETTINGS
+            <h2 className="font-title text-lg sm:text-xl font-bold tracking-[0.24em] uppercase text-[#ede8dc]">
+              SYSTEM SETTINGS
             </h2>
-            <span className="font-cinzel text-xs tracking-[0.3em] text-amber-400/80 uppercase font-semibold hidden sm:inline">
+            <span className="font-ui text-xs tracking-[0.25em] text-[#c5a059] uppercase font-semibold hidden sm:inline">
               / {activeCategory}
             </span>
           </div>
         </div>
 
-        <div className="flex items-center gap-3 text-xs font-cinzel text-slate-500">
-          <span className="border border-slate-800 px-2 py-0.5 rounded text-slate-400 hidden md:inline">
-            Q / E CHANGE CATEGORY
+        <div className="flex items-center gap-3 text-xs font-mono text-[#5a6270]">
+          <span className="border border-[#222834] px-2 py-0.5 rounded text-[#848c98] hidden md:inline">
+            [Q / E] PREV / NEXT CATEGORY
           </span>
         </div>
       </header>
 
-      {/* 3. Main Center Split: Left Category Navigation, Right Settings Controls */}
-      <div className="relative z-10 flex-1 flex flex-col md:flex-row overflow-hidden max-w-7xl mx-auto w-full px-6 sm:px-12 py-4">
+      {/* 3. Main Center Split */}
+      <div className="relative z-10 flex-1 flex flex-col md:flex-row overflow-hidden max-w-7xl mx-auto w-full px-6 sm:px-12 py-3">
         {/* LEFT: Category Navigation Column */}
         <nav
-          className="w-full md:w-72 md:border-r border-slate-900/90 py-4 md:pr-6 shrink-0 flex md:flex-col gap-1 overflow-x-auto md:overflow-visible"
+          className="w-full md:w-64 md:border-r border-[#181d26] py-3 md:pr-4 shrink-0 flex md:flex-col gap-1 overflow-x-auto md:overflow-visible"
           aria-label="Settings Categories"
         >
           {CATEGORIES.map((cat) => {
@@ -363,37 +355,37 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
                   setActiveCategory(cat.id);
                 }}
                 onMouseEnter={() => soundEngine.playHover()}
-                className={`group relative flex items-center justify-between w-full px-4 py-3 text-left transition-all duration-200 cursor-pointer outline-none ${
+                className={`group relative flex items-center justify-between w-full px-4 py-2.5 text-left transition-all duration-150 cursor-pointer outline-none ${
                   isSelected
-                    ? 'bg-amber-500/10 text-white'
-                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900/30'
+                    ? 'bg-[#c5a059]/10 text-[#ede8dc]'
+                    : 'text-[#848c98] hover:text-[#ded9cd] hover:bg-white/[0.02]'
                 }`}
               >
-                {/* Thin Selection Bar */}
+                {/* Thin Selection Marker */}
                 <div
-                  className={`absolute left-0 top-0 bottom-0 w-1 transition-all ${
+                  className={`absolute left-0 top-0 bottom-0 w-[2px] transition-all ${
                     isSelected
-                      ? 'bg-amber-400 shadow-[0_0_8px_#f59e0b]'
-                      : 'bg-transparent group-hover:bg-slate-700'
+                      ? 'bg-[#c5a059] shadow-[0_0_6px_rgba(197,160,89,0.8)]'
+                      : 'bg-transparent group-hover:bg-[#2b3342]'
                   }`}
                 />
 
                 <div className="flex items-center gap-3">
                   <Icon
-                    className={`w-4 h-4 transition-colors ${
-                      isSelected ? 'text-amber-300' : 'text-slate-500 group-hover:text-slate-400'
+                    className={`w-3.5 h-3.5 transition-colors ${
+                      isSelected ? 'text-[#c5a059]' : 'text-[#5a6270] group-hover:text-[#848c98]'
                     }`}
                   />
                   <span
-                    className={`font-cinzel text-xs sm:text-sm tracking-[0.2em] uppercase font-semibold ${
-                      isSelected ? 'text-amber-200 font-bold' : ''
+                    className={`font-ui text-xs tracking-[0.2em] uppercase font-semibold ${
+                      isSelected ? 'text-[#ede8dc] font-bold' : ''
                     }`}
                   >
                     {cat.label}
                   </span>
                 </div>
 
-                <span className="font-mono text-[10px] text-slate-600 hidden md:inline">
+                <span className="font-mono text-[10px] text-[#454c59] hidden md:inline">
                   {cat.index}
                 </span>
               </button>
@@ -457,9 +449,8 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
         </div>
       </div>
 
-      {/* 4. Bottom Navigation & Action Hints Bar */}
-      <footer className="relative z-10 flex flex-col sm:flex-row items-center justify-between px-8 sm:px-12 py-4 border-t border-slate-900 bg-black/70 backdrop-blur-sm text-xs font-cinzel text-slate-400 gap-3">
-        {/* Reset Defaults Control */}
+      {/* 4. Bottom Control Bar */}
+      <footer className="relative z-10 flex flex-col sm:flex-row items-center justify-between px-8 sm:px-12 py-3 border-t border-[#181d26] bg-[#040508]/80 backdrop-blur-sm text-xs font-ui text-[#848c98] gap-3">
         <button
           type="button"
           onClick={() => {
@@ -467,69 +458,60 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
             setShowResetConfirm(true);
           }}
           onMouseEnter={() => soundEngine.playHover()}
-          className="flex items-center gap-2 text-slate-400 hover:text-amber-300 transition-colors uppercase tracking-wider cursor-pointer"
+          className="flex items-center gap-2 text-[#7d848f] hover:text-[#c5a059] transition-colors uppercase tracking-wider cursor-pointer text-[11px]"
         >
           <RotateCcw className="w-3.5 h-3.5" />
           <span>[R] RESTORE DEFAULTS</span>
         </button>
 
-        {/* Console / Keyboard Hints Bar */}
-        <div className="flex items-center gap-4 text-[10px] sm:text-[11px] tracking-widest text-slate-500 uppercase">
-          <span>
-            <span className="text-amber-400 font-bold mr-1">[W / S]</span> NAVIGATE
-          </span>
+        <div className="flex items-center gap-3 font-mono text-[10px] sm:text-[11px] tracking-wider text-[#5a6270] uppercase">
+          <span><span className="text-[#848c98] font-bold">[W / S]</span> NAVIGATE</span>
           <span>·</span>
-          <span>
-            <span className="text-amber-400 font-bold mr-1">[A / D]</span> ADJUST
-          </span>
+          <span><span className="text-[#848c98] font-bold">[A / D]</span> ADJUST</span>
           <span>·</span>
-          <span>
-            <span className="text-amber-400 font-bold mr-1">[ENTER]</span> SELECT
-          </span>
+          <span><span className="text-[#848c98] font-bold">[ENTER]</span> SELECT</span>
           <span>·</span>
-          <span>
-            <span className="text-amber-400 font-bold mr-1">[ESC]</span> RETURN
-          </span>
+          <span><span className="text-[#848c98] font-bold">[ESC]</span> RETURN</span>
         </div>
       </footer>
 
-      {/* 5. Resolution Countdown Confirmation Modal */}
+      {/* 5. Resolution Revert Countdown Modal */}
       {pendingResolution && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn">
-          <div className="w-full max-w-md bg-[#090d14] border border-amber-500/60 rounded p-6 shadow-[0_0_50px_rgba(0,0,0,0.9)] space-y-4 text-center">
-            <div className="flex items-center justify-center gap-2 text-amber-400 text-xs font-cinzel tracking-widest uppercase">
-              <AlertTriangle className="w-4 h-4 text-amber-400" />
-              CONFIRM DISPLAY CONFIGURATION
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm animate-fadeIn">
+          <div className="w-full max-w-md bg-[#0a0d14] border border-[#2e3442] p-6 shadow-[0_10px_40px_rgba(0,0,0,0.95)] space-y-4 text-center">
+            <div className="flex items-center justify-center gap-2 text-[#c5a059] text-xs font-ui tracking-wider uppercase font-semibold">
+              <AlertTriangle className="w-4 h-4 text-[#c5a059]" />
+              DISPLAY CONFIGURATION CONFIRMATION
             </div>
 
-            <h3 className="font-cinzel text-xl font-bold uppercase text-white tracking-wider">
+            <h3 className="font-title text-xl font-bold uppercase text-[#ede8dc] tracking-wider">
               KEEP NEW RESOLUTION?
             </h3>
 
-            <p className="font-sans text-xs text-slate-300">
-              Display adjusted to <span className="text-amber-300 font-mono font-bold">{pendingResolution.resolution}</span>.
+            <p className="font-ui text-xs text-[#848c98]">
+              Target adjusted to <span className="text-[#ede8dc] font-mono font-bold">{pendingResolution.resolution}</span>.
               Reverting to previous setting in{' '}
-              <span className="text-amber-400 font-mono text-sm font-bold">
+              <span className="text-[#c5a059] font-mono font-bold">
                 {pendingResolution.countdown}s
               </span>.
             </p>
 
-            <div className="flex items-center gap-3 pt-3">
+            <div className="flex items-center gap-3 pt-2">
               <button
                 type="button"
                 onClick={revertResolution}
-                className="flex-1 py-2.5 border border-slate-700 bg-slate-900/80 hover:bg-slate-800 text-slate-300 font-cinzel text-xs tracking-wider uppercase font-semibold transition-colors cursor-pointer flex items-center justify-center gap-2"
+                className="flex-1 py-2.5 border border-[#2e3442] hover:border-[#434b5c] text-[#848c98] hover:text-[#ede8dc] font-ui text-xs tracking-wider uppercase font-semibold transition-colors cursor-pointer flex items-center justify-center gap-2"
               >
-                <X className="w-4 h-4" />
+                <X className="w-3.5 h-3.5" />
                 REVERT ({pendingResolution.countdown}s)
               </button>
 
               <button
                 type="button"
                 onClick={confirmResolutionKeep}
-                className="flex-1 py-2.5 bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-black font-cinzel text-xs tracking-wider uppercase font-bold transition-all shadow-[0_0_15px_rgba(245,158,11,0.3)] cursor-pointer flex items-center justify-center gap-2"
+                className="flex-1 py-2.5 border border-[#c5a059] bg-[#c5a059]/15 hover:bg-[#c5a059]/25 text-[#ede8dc] font-title text-xs tracking-wider uppercase font-bold transition-colors cursor-pointer flex items-center justify-center gap-2"
               >
-                <Check className="w-4 h-4" />
+                <Check className="w-3.5 h-3.5 text-[#c5a059]" />
                 KEEP CHANGES
               </button>
             </div>
@@ -539,33 +521,33 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
 
       {/* 6. Restore Defaults Confirmation Modal */}
       {showResetConfirm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn">
-          <div className="w-full max-w-md bg-[#090d14] border border-slate-700 rounded p-6 shadow-[0_0_50px_rgba(0,0,0,0.9)] space-y-4 text-center">
-            <h3 className="font-cinzel text-lg font-bold uppercase text-white tracking-wider">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm animate-fadeIn">
+          <div className="w-full max-w-md bg-[#0a0d14] border border-[#2e3442] p-6 shadow-[0_10px_40px_rgba(0,0,0,0.95)] space-y-4 text-center">
+            <h3 className="font-title text-lg font-bold uppercase text-[#ede8dc] tracking-wider">
               RESTORE DEFAULT SETTINGS?
             </h3>
 
-            <p className="font-sans text-xs text-slate-300 leading-relaxed">
-              This will restore all configurations across Display, Graphics, Audio, Gameplay, Controls,
-              and Accessibility to their original defaults. Real save files will remain unaffected.
+            <p className="font-ui text-xs text-[#848c98] leading-relaxed">
+              All configurations across Display, Graphics, Acoustics, Gameplay, Controls, and Accessibility
+              will return to factory defaults. Recorded chronicles will remain untouched.
             </p>
 
-            <div className="flex items-center gap-3 pt-3">
+            <div className="flex items-center gap-3 pt-2">
               <button
                 type="button"
                 onClick={() => {
                   soundEngine.playBack();
                   setShowResetConfirm(false);
                 }}
-                className="flex-1 py-2.5 border border-slate-700 bg-slate-900/80 hover:bg-slate-800 text-slate-300 font-cinzel text-xs tracking-wider uppercase font-semibold transition-colors cursor-pointer"
+                className="flex-1 py-2.5 border border-[#2e3442] hover:border-[#434b5c] text-[#848c98] hover:text-[#ede8dc] font-ui text-xs tracking-wider uppercase font-semibold transition-colors cursor-pointer"
               >
-                CANCEL
+                CANCEL [ESC]
               </button>
 
               <button
                 type="button"
                 onClick={handleConfirmReset}
-                className="flex-1 py-2.5 border border-red-500/80 bg-red-950/60 hover:bg-red-900/80 text-red-200 font-cinzel text-xs tracking-wider uppercase font-bold transition-colors cursor-pointer"
+                className="flex-1 py-2.5 border border-[#8a242a] bg-[#8a242a]/20 hover:bg-[#8a242a]/30 text-[#ede8dc] font-title text-xs tracking-wider uppercase font-bold transition-colors cursor-pointer"
               >
                 RESTORE DEFAULTS
               </button>
