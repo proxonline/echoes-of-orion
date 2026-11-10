@@ -1,0 +1,6 @@
+{
+  "name": "Echoes of Orion",
+  "description": "Cinematic Game Title Screen for the dark-fantasy action RPG Echoes of Orion, featuring dynamic particle atmospheric effects, character selection, audio, and lore archives.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,116 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-cinzel: 'Cinzel', serif;
+  --font-cinzel-dec: 'Cinzel Decorative', serif;
+  --font-sans: 'Plus Jakarta Sans', sans-serif;
+  
+  --color-orion-gold: #c8aa6e;
+  --color-orion-gold-bright: #f0e6d2;
+  --color-orion-gold-dark: #785a28;
+  --color-orion-silver: #c0c6d0;
+  --color-orion-spectral: #7be5ff;
+  --color-orion-crimson: #8b1d24;
+}
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    background-color: #030408;
+    color: #e2e8f0;
+    overflow: hidden;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+}
+
+/* Custom Metallic & Ethereal Effects */
+.font-cinzel {
+  font-family: 'Cinzel', serif;
+}
+
+.font-cinzel-dec {
+  font-family: 'Cinzel Decorative', serif;
+}
+
+/* Metallic gold gradient text */
+.text-gold-gradient {
+  background: linear-gradient(180deg, #fff7d6 0%, #e2be7a 40%, #b28a3f 75%, #6a4f1a 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.8));
+}
+
+.text-silver-gradient {
+  background: linear-gradient(180deg, #ffffff 0%, #d8e0ea 45%, #8896a7 85%, #566474 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.8));
+}
+
+.text-spectral-gradient {
+  background: linear-gradient(180deg, #ffffff 0%, #a5f3fc 40%, #38bdf8 70%, #0284c7 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 12px rgba(56, 189, 248, 0.5));
+}
+
+/* Atmospheric subtle scanline and cinematic vignette */
+.cinematic-vignette {
+  background: radial-gradient(circle at 50% 45%, transparent 35%, rgba(4, 7, 12, 0.4) 70%, rgba(2, 4, 8, 0.92) 100%);
+}
+
+.cinematic-bottom-scrim {
+  background: linear-gradient(to top, rgba(2, 4, 8, 0.95) 0%, rgba(2, 4, 8, 0.6) 35%, transparent 100%);
+}
+
+.cinematic-left-scrim {
+  background: linear-gradient(to right, rgba(2, 4, 8, 0.88) 0%, rgba(2, 4, 8, 0.5) 40%, transparent 100%);
+}
+
+/* Noise overlay */
+.bg-grain {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 0);
+  background-size: 24px 24px;
+}
+
+/* Subtle glowing pulse */
+@keyframes ethereal-pulse {
+  0%, 100% {
+    opacity: 0.35;
+    transform: scale(1);
+    filter: drop-shadow(0 0 15px rgba(123, 229, 255, 0.3));
+  }
+  50% {
+    opacity: 0.75;
+    transform: scale(1.03);
+    filter: drop-shadow(0 0 30px rgba(123, 229, 255, 0.7));
+  }
+}
+
+.animate-ethereal-pulse {
+  animation: ethereal-pulse 6s ease-in-out infinite;
+}
+
+@keyframes celestial-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-celestial-spin-slow {
+  animation: celestial-spin 140s linear infinite;
+}
+
+.animate-celestial-spin-reverse {
+  animation: celestial-spin 180s linear infinite reverse;
+}
