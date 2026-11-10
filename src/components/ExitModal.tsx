@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { soundEngine } from '../audio/soundEngine';
-import { X, Moon, LogOut } from 'lucide-react';
+import { Moon, LogOut } from 'lucide-react';
 
 interface ExitModalProps {
   onClose: () => void;
@@ -9,7 +9,31 @@ interface ExitModalProps {
 export const ExitModal: React.FC<ExitModalProps> = ({ onClose }) => {
   const [hasExited, setHasExited] = useState<boolean>(false);
 
-  const handleExitGame = () => {
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!hasExited) {
+        if (e.key === 'Escape' || e.key === 'n' || e.key === 'N') {
+          e.preventDefault();
+          soundEngine.playBack();
+          onClose();
+        } else if (e.key === 'Enter' || e.key === 'y' || e.key === 'Y') {
+          e.preventDefault();
+          handleExit();
+        }
+      } else {
+        if (e.key === 'Enter' || e.key === ' ' || e.key === 'Escape') {
+          soundEngine.startAmbience();
+          setHasExited(false);
+          onClose();
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [hasExited, onClose]);
+
+  const handleExit = () => {
     soundEngine.playConfirm();
     soundEngine.stopAmbience();
     setHasExited(true);
@@ -28,6 +52,7 @@ export const ExitModal: React.FC<ExitModalProps> = ({ onClose }) => {
           </p>
           <div className="pt-6">
             <button
+              type="button"
               onClick={() => {
                 soundEngine.startAmbience();
                 setHasExited(false);
@@ -35,7 +60,7 @@ export const ExitModal: React.FC<ExitModalProps> = ({ onClose }) => {
               }}
               className="px-6 py-2.5 bg-slate-900 border border-slate-700 hover:border-amber-400 text-xs font-cinzel tracking-widest uppercase text-slate-300 hover:text-white rounded transition-colors cursor-pointer"
             >
-              AWAKEN ONCE MORE
+              [ENTER] AWAKEN ONCE MORE
             </button>
           </div>
         </div>
@@ -45,45 +70,39 @@ export const ExitModal: React.FC<ExitModalProps> = ({ onClose }) => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn select-none">
-      <div className="w-full max-w-md bg-[#070a10] border border-slate-700/80 rounded-lg p-6 sm:p-8 shadow-[0_0_50px_rgba(0,0,0,0.9)] space-y-6">
-        <div className="flex items-center justify-between border-b border-slate-800 pb-4">
-          <div className="flex items-center gap-2.5">
-            <LogOut className="w-4 h-4 text-amber-400" />
-            <h3 className="font-cinzel text-lg font-bold tracking-wider uppercase text-white">
-              DEPART THE REALM
-            </h3>
-          </div>
-          <button
-            onClick={() => {
-              soundEngine.playBack();
-              onClose();
-            }}
-            className="p-1 text-slate-400 hover:text-white cursor-pointer"
-          >
-            <X className="w-4 h-4" />
-          </button>
+      <div className="w-full max-w-md bg-[#090d14] border border-slate-700 rounded p-6 sm:p-8 shadow-[0_0_50px_rgba(0,0,0,0.9)] space-y-6 text-center">
+        <div className="flex items-center justify-center gap-2.5 text-amber-400 border-b border-slate-800 pb-3">
+          <LogOut className="w-4 h-4" />
+          <h3 className="font-cinzel text-lg font-bold tracking-wider uppercase text-white">
+            EXIT GAME?
+          </h3>
         </div>
 
-        <p className="font-sans text-xs sm:text-sm text-slate-300 leading-relaxed text-center">
-          Are you certain you wish to suspend this session and return to desktop? All chronicle
-          progress has been preserved in memory.
+        <p className="font-sans text-sm text-slate-300 leading-relaxed">
+          Return to the desktop?
         </p>
 
-        <div className="flex items-center gap-3 pt-2">
+        <p className="font-sans text-xs text-slate-500">
+          All chronicle records and settings are preserved in memory.
+        </p>
+
+        <div className="flex items-center gap-4 pt-2">
           <button
+            type="button"
             onClick={() => {
               soundEngine.playBack();
               onClose();
             }}
             className="flex-1 py-2.5 rounded border border-slate-700 bg-slate-900/80 hover:bg-slate-800 text-slate-300 font-cinzel text-xs tracking-wider uppercase font-semibold transition-colors cursor-pointer"
           >
-            CANCEL
+            NO [ESC]
           </button>
           <button
-            onClick={handleExitGame}
+            type="button"
+            onClick={handleExit}
             className="flex-1 py-2.5 rounded border border-red-500/80 bg-red-950/60 hover:bg-red-900/80 text-red-200 font-cinzel text-xs tracking-wider uppercase font-semibold transition-colors cursor-pointer"
           >
-            EXIT TO DESKTOP
+            YES [ENTER]
           </button>
         </div>
       </div>

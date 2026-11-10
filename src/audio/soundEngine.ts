@@ -14,6 +14,7 @@ class SoundEngine {
   private musicGain: GainNode | null = null;
   private sfxGain: GainNode | null = null;
   private ambientGain: GainNode | null = null;
+  private voiceGain: GainNode | null = null;
 
   // Ambience nodes for procedural soundscapes
   private droneOsc1: OscillatorNode | null = null;
@@ -29,6 +30,7 @@ class SoundEngine {
     music: 0.75,
     sfx: 0.85,
     ambient: 0.7,
+    voice: 0.9,
     isMuted: false,
   };
 
@@ -42,10 +44,12 @@ class SoundEngine {
     this.musicGain = this.ctx.createGain();
     this.sfxGain = this.ctx.createGain();
     this.ambientGain = this.ctx.createGain();
+    this.voiceGain = this.ctx.createGain();
 
     this.musicGain.connect(this.masterGain);
     this.sfxGain.connect(this.masterGain);
     this.ambientGain.connect(this.masterGain);
+    this.voiceGain.connect(this.masterGain);
     this.masterGain.connect(this.ctx.destination);
 
     this.applyGains();
@@ -57,6 +61,7 @@ class SoundEngine {
     musicVolume: number;
     sfxVolume: number;
     ambientVolume: number;
+    voiceVolume?: number;
     isMuted: boolean;
   }) {
     this.settings = {
@@ -64,6 +69,7 @@ class SoundEngine {
       music: settings.musicVolume / 100,
       sfx: settings.sfxVolume / 100,
       ambient: settings.ambientVolume / 100,
+      voice: (settings.voiceVolume ?? 90) / 100,
       isMuted: settings.isMuted,
     };
     this.applyGains();
@@ -78,6 +84,9 @@ class SoundEngine {
     this.musicGain.gain.setTargetAtTime(this.settings.music, now, 0.05);
     this.sfxGain.gain.setTargetAtTime(this.settings.sfx, now, 0.05);
     this.ambientGain.gain.setTargetAtTime(this.settings.ambient, now, 0.05);
+    if (this.voiceGain) {
+      this.voiceGain.gain.setTargetAtTime(this.settings.voice, now, 0.05);
+    }
   }
 
   public async startAmbience() {
@@ -352,6 +361,52 @@ class SoundEngine {
 
     osc.start(now);
     osc.stop(now + 1.15);
+  }
+
+  public playTick() {
+    this.initContext();
+    if (!this.ctx || !this.sfxGain || this.settings.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(520, now);
+    osc.frequency.exponentialRampToValueAtTime(340, now + 0.04);
+
+    gain.gain.setValueAtTime(0.001, now);
+    gain.gain.linearRampToValueAtTime(0.04, now + 0.005);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.04);
+
+    osc.connect(gain);
+    gain.connect(this.sfxGain);
+
+    osc.start(now);
+    osc.stop(now + 0.045);
+  }
+
+  public playRebind() {
+    this.initContext();
+    if (!this.ctx || !this.sfxGain || this.settings.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(440, now);
+    osc.frequency.setValueAtTime(660, now + 0.06);
+
+    gain.gain.setValueAtTime(0.001, now);
+    gain.gain.linearRampToValueAtTime(0.08, now + 0.01);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.2);
+
+    osc.connect(gain);
+    gain.connect(this.sfxGain);
+
+    osc.start(now);
+    osc.stop(now + 0.22);
   }
 }
 

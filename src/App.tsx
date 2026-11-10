@@ -8,13 +8,13 @@ import { TitleLockup } from './components/TitleLockup';
 import { MainMenu } from './components/MainMenu';
 import { CharacterSelect } from './components/CharacterSelect';
 import { PrologueTransition } from './components/PrologueTransition';
-import { SettingsModal } from './components/SettingsModal';
+import { SettingsScreen } from './components/SettingsScreen';
 import { LoadGameModal } from './components/LoadGameModal';
 import { ExtrasModal } from './components/ExtrasModal';
 import { ExitModal } from './components/ExitModal';
 
-const SETTINGS_STORAGE_KEY = 'echoes_of_orion_settings_v1';
-const SAVES_STORAGE_KEY = 'echoes_of_orion_saves_v1';
+const SETTINGS_STORAGE_KEY = 'echoes_of_orion_settings_v2';
+const SAVES_STORAGE_KEY = 'echoes_of_orion_saves_v2';
 
 export default function App() {
   const [screenState, setScreenState] = useState<ScreenState>('TITLE');
@@ -34,7 +34,7 @@ export default function App() {
     return DEFAULT_SETTINGS;
   });
 
-  // Save Slots State with Persistence
+  // Save Slots State with Persistence (clean install defaults to all empty)
   const [saveSlots, setSaveSlots] = useState<SaveSlot[]>(() => {
     try {
       const saved = localStorage.getItem(SAVES_STORAGE_KEY);
@@ -58,19 +58,24 @@ export default function App() {
     }
   };
 
-  // Mouse Parallax for Background Image
+  // Mouse Parallax for Background Image (respects cameraParallax and reducedMotion)
   useEffect(() => {
-    if (!settings.display.cameraParallax) return;
+    if (settings.display.cameraParallax === 'Off' || settings.accessibility.reducedMotion) {
+      setMouseParallax({ x: 0, y: 0 });
+      return;
+    }
+
+    const multiplier = settings.display.cameraParallax === 'Subtle' ? 6 : 14;
 
     const handleMouseMove = (e: MouseEvent) => {
-      const normX = (e.clientX / window.innerWidth - 0.5) * 14;
-      const normY = (e.clientY / window.innerHeight - 0.5) * 10;
+      const normX = (e.clientX / window.innerWidth - 0.5) * multiplier;
+      const normY = (e.clientY / window.innerHeight - 0.5) * (multiplier * 0.7);
       setMouseParallax({ x: normX, y: normY });
     };
 
     window.addEventListener('mousemove', handleMouseMove);
     return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, [settings.display.cameraParallax]);
+  }, [settings.display.cameraParallax, settings.accessibility.reducedMotion]);
 
   // Save Settings handler
   const handleSaveSettings = (newSettings: GameSettings) => {
@@ -113,7 +118,7 @@ export default function App() {
           playtimeMinutes: 0,
           echoesCount: 1,
           lastPlayed: new Date().toISOString().replace('T', ' ').slice(0, 16),
-          difficulty: 'Normal' as const,
+          difficulty: settings.gameplay.difficulty,
         };
       }
       return slot;
@@ -170,10 +175,13 @@ export default function App() {
     }
   };
 
+  // High contrast styling class
+  const highContrastClass = settings.accessibility.highContrastUI ? 'contrast-125 saturate-110' : '';
+
   return (
     <div
       onClick={startAudioOnInteraction}
-      className="relative w-screen h-screen overflow-hidden bg-[#030509] text-slate-100 select-none flex flex-col justify-between"
+      className={`relative w-screen h-screen overflow-hidden bg-[#030509] text-slate-100 select-none flex flex-col justify-between ${highContrastClass}`}
     >
       {/* 1. CINEMATIC BACKGROUND ENVIRONMENT LAYER */}
       <div
@@ -197,10 +205,18 @@ export default function App() {
       <div className="absolute inset-0 pointer-events-none z-[2] bg-grain opacity-40 mix-blend-overlay" />
 
       {/* 3. DYNAMIC PARTICLE SYSTEM (Embers, Spectral Blue Echoes, Drifting Ash) */}
-      <ParticleCanvas
-        graphicsQuality={settings.display.graphicsQuality}
-        enableParallax={settings.display.cameraParallax}
-      />
+      {!settings.accessibility.reducedMotion && (
+        <ParticleCanvas
+          graphicsQuality={
+            settings.graphics.volumetricFog === 'Off'
+              ? 'Low'
+              : settings.graphics.volumetricFog === 'Low'
+              ? 'Medium'
+              : 'High'
+          }
+          enableParallax={settings.display.cameraParallax !== 'Off'}
+        />
+      )}
 
       {/* 4. ACTIVE SCREEN RENDERER */}
       {screenState === 'TITLE' && (
@@ -222,7 +238,7 @@ export default function App() {
             <TitleLockup />
           </div>
 
-          {/* Lower Section: Vertical Main Menu (Left-aligned/Lower Center) */}
+          {/* Lower Section: Vertical Main Menu */}
           <div className="flex flex-col md:flex-row items-center md:items-end justify-between w-full pb-4 md:pb-6">
             <div className="w-full md:w-auto">
               <MainMenu
@@ -260,7 +276,6 @@ export default function App() {
 
           {/* Bottom Indicators */}
           <footer className="w-full flex items-center justify-between border-t border-slate-800/60 pt-3 text-[10px] sm:text-[11px] font-cinzel text-slate-400 select-none">
-            {/* Bottom Left: Subtle environmental message */}
             <div className="flex items-center gap-2">
               <div className="w-1 h-1 rounded-full bg-cyan-400/80 shadow-[0_0_6px_#38bdf8]" />
               <span className="tracking-[0.25em] text-slate-400 uppercase">
@@ -268,7 +283,6 @@ export default function App() {
               </span>
             </div>
 
-            {/* Bottom Right: Version notice */}
             <div className="tracking-[0.2em] text-slate-500 uppercase">
               ECHOES OF ORION · VERSION 0.1 — PRE-ALPHA
             </div>
@@ -293,16 +307,16 @@ export default function App() {
         />
       )}
 
-      {/* Modal: Settings */}
+      {/* Screen: Settings (Master Full-Screen AAA Redesign) */}
       {screenState === 'SETTINGS' && (
-        <SettingsModal
+        <SettingsScreen
           settings={settings}
           onSaveSettings={handleSaveSettings}
           onClose={() => setScreenState('TITLE')}
         />
       )}
 
-      {/* Modal: Load Game */}
+      {/* Screen: Load Game (Full-Screen Console Save Slot Architecture) */}
       {screenState === 'LOAD_GAME' && (
         <LoadGameModal
           saveSlots={saveSlots}
@@ -316,7 +330,7 @@ export default function App() {
         />
       )}
 
-      {/* Modal: Extras & Archives */}
+      {/* Screen: Extras & Archives */}
       {screenState === 'EXTRAS' && (
         <ExtrasModal onClose={() => setScreenState('TITLE')} />
       )}
